@@ -11,6 +11,7 @@ function startToMakingFont(font) {
         console.log(imagePath)
         return runPythonCode(imagePath) // run python code
     }).then(function(fontFilePaths) {
+        console.log(fontFilePaths)
 
     // font files upload
 
@@ -18,25 +19,25 @@ function startToMakingFont(font) {
     }).catch(function(err) {
         console.log(err);
     });
-//         return runPythonCode(imagePath)
-//     // run python code
-//     runPythonCode(imagePath)
-//     .then(function(fontFilePaths) {
+//     return runPythonCode(imagePath)
+//   // run python code
+//   runPythonCode(imagePath)
+//   .then(function(fontFilePaths) {
 
-//     // font files upload
+//   // font files upload
 
 // // send make-complete message to SONMAT-WEB
-//     })
+//   })
 
 
 
 
-//     }).then(function(result) {
+//   }).then(function(result) {
 
 
 
 
-//     });
+//   });
 }
 
 function startToMakingFont_ex() {
@@ -49,7 +50,7 @@ function startToMakingFont_ex() {
         console.log(fontFilePaths)
 
         // font files upload
-        return uploadFontFiles(fontFilePaths)
+        return uploadFontFiles_to_WAS(fontFilePaths)
     }).then(function(result) {
         console.log(result)
 
@@ -59,25 +60,18 @@ function startToMakingFont_ex() {
     }).catch(function(err) {
         console.log(err);
     });
-//         return runPythonCode(imagePath)
-//     // run python code
-//     runPythonCode(imagePath)
-//     .then(function(fontFilePaths) {
+}
 
-//     // font files upload
+function upload_example() {
 
-// // send make-complete message to SONMAT-WEB
-//     })
-
-
-
-
-//     }).then(function(result) {
-
-
-
-
-//     });
+    // handwrite image download
+    uploadFontFiles_to_WAS(['C:\\Users\\hhjung\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',
+                        'C:\\Users\\hhjung\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',])
+    .then(function(imagePath) {
+        
+    }).catch(function(err) {
+        console.log(err);
+    });
 }
 
 function downloadInputImage(filePath, font_id, newFileName) {
@@ -111,9 +105,9 @@ function runPythonCode(imagePath) {
 
     var options = {
         mode: 'text',
-        pythonPath: 'C:/Users/hhjun/python3/python3.exe', // 'path/to/python'
+        pythonPath: 'C:/Users/hhjung/python3.6/python3.exe', // 'path/to/python'
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: 'C:/Users/hhjun/Desktop/workspace/pytorch', // 'path/to/my/scripts'
+        scriptPath: __dirname, // 'path/to/my/***.py'
         args: [ imagePath ] // sending Parameter
     };
 
@@ -129,52 +123,91 @@ function runPythonCode(imagePath) {
 
 }
 
-function uploadFontFiles(fontFilePaths) {
+function uploadFontFile_to_WS(fontFilePath) {
 
     var FILE_UPLOAD_API_URL = 'http://file-api.seolgi.com/api/files/upload';
-    var fontFileURLs = [];
-
-    var req = request.post(FILE_UPLOAD_API_URL, function (err, resp, body) {
-        if (err) {
-            console.log('Error!');
-        } else {
-            console.log('URL: ' + body);
-            fontFileURLs.push(body);
-        }
-    });
+    
 
     return new Promise(function(resolve, reject){
 
-        fontFilePaths.forEach(function(fontFilePath) {
-
-
-
-            var form = req.form();
-            form.append('file', fs.createReadStream(fontFilePath));
-        });
-
-    });
-
-
-
-    fontFilePaths.forEach(function(fontFilePath) {
-
+        // fontFilePaths.forEach(function(fontFilePath) {
         var req = request.post(FILE_UPLOAD_API_URL, function (err, resp, body) {
             if (err) {
-                console.log('Error!');
+                reject(err)
             } else {
                 console.log('URL: ' + body);
-                fontFileURLs.push(body);
+                resolve(body.host + body.downloadPath)
             }
         });
 
         var form = req.form();
         form.append('file', fs.createReadStream(fontFilePath));
+
     });
+}
+
+function uploadFontFiles_to_WAS(fontFilePaths){
+    var fontFileURLs = [];
+
+    // 이걸 어떻게 forEach 문 처럼 하게 할 것인가...
+
+    uploadFontFile_to_WS(fontFilePaths[0])
+    .then(function(url){
+        fontFileURLs.push(url);
+        return uploadFontFile_to_WS(fontFilePaths[1])
+    }).then(function(url){
+        fontFileURLs.push(url);
+        return uploadFontFile_to_WS(fontFilePaths[2])
+    }).then(function(url){
+        fontFileURLs.push(url);
+        return uploadFontFile_to_WS(fontFilePaths[3])
+    }).then(function(url){
+        fontFileURLs.push(url);
+        return new Promise(function(resolve, reject){
+
+            // fontFilePaths.forEach(function(fontFilePath) {
+            var req = request.post(/* WAS Server */ '', function (err, resp, body) {
+                if (err) {
+                    reject(err)
+                } else {
+                    console.log('URL: ' + body);
+                    resolve(body)
+                }
+            });
+
+            var form = req.form();
+            form.append('list', fontFileURLs);
+
+        });
+    // 
+
+    }).catch(function(err) {
+        console.log(err);
+    });
+
+
+    
+    // fontFilePaths.forEach(function(fontFilePath) {
+
+    //     result = uploadFontFile_to_WS(fontFilePath)
+
+    //     var req = request.post(FILE_UPLOAD_API_URL, function (err, resp, body) {
+    //         if (err) {
+    //             console.log('Error!');
+    //         } else {
+    //             console.log('URL: ' + body);
+    //             fontFileURLs.push(body);
+    //         }
+    //     });
+
+    //     var form = req.form();
+    //     form.append('file', fs.createReadStream(fontFilePath));
+    // });
 }
 
 var func = {}
 func.startToMakingFont = startToMakingFont;
 func.startToMakingFont_ex = startToMakingFont_ex;
+func.upload_example = upload_example;
 
 module.exports = func;
