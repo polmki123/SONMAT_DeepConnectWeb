@@ -1,7 +1,9 @@
 import sys
 import os
 
-print(sys.argv[1])
-print(os.path.exists(sys.argv[1]))
-print(os.path.isfile(sys.argv[1]))
-print(os.path.isdir(sys.argv[1]))
+# input image file path is 
+# sys.argv[1]
+
+print('C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png')
+print('C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png')
+

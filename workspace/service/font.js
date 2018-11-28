@@ -8,66 +8,66 @@ function startToMakingFont(font) {
     // handwrite image download
     downloadInputImage(font.handwrite_image_path, font.id, 'sample.png')
     .then(function(imagePath) {
-        console.log(imagePath)
         return runPythonCode(imagePath) // run python code
     }).then(function(fontFilePaths) {
-        console.log(fontFilePaths)
-
-    // font files upload
-
-// send make-complete message to SONMAT-WEB
+        return uploadFontFiles_to_WS(fontFilePaths)
+    }).then(function(fontUrls) {
+        return uploadFontURL_to_WAS(font.id, fontUrls)
+    }).then(function(result) {
+        console.log(result)
     }).catch(function(err) {
         console.log(err);
     });
-//     return runPythonCode(imagePath)
-//   // run python code
-//   runPythonCode(imagePath)
-//   .then(function(fontFilePaths) {
-
-//   // font files upload
-
-// // send make-complete message to SONMAT-WEB
-//   })
-
-
-
-
-//   }).then(function(result) {
-
-
-
-
-//   });
 }
 
-function startToMakingFont_ex() {
 
-    // handwrite image download
+
+function download_example() {
+
     downloadInputImage('http://file.son-mat.com/file/212/fc72b451-3ca3-4c91-a6f8-84a091e3559c.png', 10, '/sample.png')
     .then(function(imagePath) {
-        return runPythonCode(imagePath) // run python code
-    }).then(function(fontFilePaths) {
+        console.log(imagePath)
+        // 'C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png'
+    }).catch(function(err) {
+        console.log(err);
+    });
+}
+
+function python_example(){
+
+    runPythonCode('C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png')
+    .then(function(fontFilePaths) {
         console.log(fontFilePaths)
+  //       [ 'C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',
+  //         'C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png' ]
 
-        // font files upload
-        return uploadFontFiles_to_WAS(fontFilePaths)
-    }).then(function(result) {
-        console.log(result)
+    }).catch(function(err) {
+        console.log(err);
+    });
+}
 
-        // send make-complete message to SONMAT-WEB
-        // send message to WAS server
+function upload_WS_example() {
+
+    // upload font data
+    uploadFontFiles_to_WS(['C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',
+                           'C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',])
+    .then(function(fontUrls) {
+        console.log(fontUrls)
+  //       [ 'http://file.son-mat.com/file/9639/a5f7baa1-6799-497a-8aea-bfb7a2e7ac02.png',
+  //         'http://file.son-mat.com/file/1539/0549c1c9-fc49-4ec5-a5a3-16d4b06ef47a.png' ]
         
     }).catch(function(err) {
         console.log(err);
     });
 }
 
-function upload_example() {
+function upload_WAS_example() {
 
-    // handwrite image download
-    uploadFontFiles_to_WAS(['C:\\Users\\hhjung\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',
-                        'C:\\Users\\hhjung\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',])
-    .then(function(imagePath) {
+    var font_id = 10
+    uploadFontFiles_to_WS(font_id, [ 'http://file.son-mat.com/file/9639/a5f7baa1-6799-497a-8aea-bfb7a2e7ac02.png',
+                                     'http://file.son-mat.com/file/1539/0549c1c9-fc49-4ec5-a5a3-16d4b06ef47a.png' ]);
+    .then(function(result) {
+        console.log(result)
         
     }).catch(function(err) {
         console.log(err);
@@ -105,7 +105,7 @@ function runPythonCode(imagePath) {
 
     var options = {
         mode: 'text',
-        pythonPath: 'C:/Users/hhjung/python3.6/python3.exe', // 'path/to/python'
+        pythonPath: 'C:/Users/hhjun/python3/python3.exe', // 'path/to/python'
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: __dirname, // 'path/to/my/***.py'
         args: [ imagePath ] // sending Parameter
@@ -123,91 +123,73 @@ function runPythonCode(imagePath) {
 
 }
 
-function uploadFontFile_to_WS(fontFilePath) {
+function uploadFontFiles_to_WS(fontFilePaths) {
 
-    var FILE_UPLOAD_API_URL = 'http://file-api.seolgi.com/api/files/upload';
-    
+    var FILE_UPLOAD_API_URL = 'http://file-api.seolgi.com/api/files/multiple/upload';
+    var file_stream = [];
 
+    var formData = {
+        files: [],
+    };
+    fontFilePaths.forEach(function(fontFilePath){
+        formData.files.push(fs.createReadStream(fontFilePath))
+    });
     return new Promise(function(resolve, reject){
 
-        // fontFilePaths.forEach(function(fontFilePath) {
-        var req = request.post(FILE_UPLOAD_API_URL, function (err, resp, body) {
+        request.post({url: FILE_UPLOAD_API_URL, formData: formData}, function (err, resp, body) {
             if (err) {
                 reject(err)
             } else {
+                var font_paths = []
                 console.log('URL: ' + body);
-                resolve(body.host + body.downloadPath)
+                JSON.parse(body).map(filePath => { font_paths.push(filePath.host + filePath.downloadPath)});
+                // [
+                //     {
+                //         "host":"http://file.son-mat.com",
+                //         "uploadName":"92a452e5-c2ac-43be-a5ef-06667e254e05.png",
+                //         "originalName":"sample.png",
+                //         "downloadPath":"/file/4202/92a452e5-c2ac-43be-a5ef-06667e254e05.png"
+                //     },{
+                //         "host":"http://file.son-mat.com",
+                //         "uploadName":"2dcb010b-01c7-4e11-a703-99a1bb0753af.png",
+                //         "originalName":"sample.png",
+                //         "downloadPath":"/file/879/2dcb010b-01c7-4e11-a703-99a1bb0753af.png"
+                //     }
+                // ]
+                resolve(font_paths)
             }
         });
-
-        var form = req.form();
-        form.append('file', fs.createReadStream(fontFilePath));
-
     });
 }
 
-function uploadFontFiles_to_WAS(fontFilePaths){
-    var fontFileURLs = [];
+function uploadFontURL_to_WAS(font_id, fontUrls){
 
-    // 이걸 어떻게 forEach 문 처럼 하게 할 것인가...
+    var WAS_SERVER_URL = 'localhost:9000/....'
 
-    uploadFontFile_to_WS(fontFilePaths[0])
-    .then(function(url){
-        fontFileURLs.push(url);
-        return uploadFontFile_to_WS(fontFilePaths[1])
-    }).then(function(url){
-        fontFileURLs.push(url);
-        return uploadFontFile_to_WS(fontFilePaths[2])
-    }).then(function(url){
-        fontFileURLs.push(url);
-        return uploadFontFile_to_WS(fontFilePaths[3])
-    }).then(function(url){
-        fontFileURLs.push(url);
-        return new Promise(function(resolve, reject){
-
-            // fontFilePaths.forEach(function(fontFilePath) {
-            var req = request.post(/* WAS Server */ '', function (err, resp, body) {
-                if (err) {
-                    reject(err)
-                } else {
-                    console.log('URL: ' + body);
-                    resolve(body)
-                }
-            });
-
-            var form = req.form();
-            form.append('list', fontFileURLs);
-
-        });
-    // 
-
-    }).catch(function(err) {
-        console.log(err);
-    });
-
-
+    var formData = {
+        fontUrls : fontUrls,
+        font_id : font_id,
+    }
     
-    // fontFilePaths.forEach(function(fontFilePath) {
+    return new Promise(function(resolve, reject){
 
-    //     result = uploadFontFile_to_WS(fontFilePath)
-
-    //     var req = request.post(FILE_UPLOAD_API_URL, function (err, resp, body) {
-    //         if (err) {
-    //             console.log('Error!');
-    //         } else {
-    //             console.log('URL: ' + body);
-    //             fontFileURLs.push(body);
-    //         }
-    //     });
-
-    //     var form = req.form();
-    //     form.append('file', fs.createReadStream(fontFilePath));
-    // });
+        // fontFilePaths.forEach(function(fontFilePath) {
+        request.post({ url: WAS_SERVER_URL, formData: formData },  function (err, resp, body) {
+            if (err) {
+                reject(err)
+            } else {
+                console.log('Result: ' + body);
+                resolve(body)
+            }
+        });
+    });
 }
 
 var func = {}
 func.startToMakingFont = startToMakingFont;
-func.startToMakingFont_ex = startToMakingFont_ex;
-func.upload_example = upload_example;
+func.download_example = download_example;
+func.python_example = python_example;
+func.upload_WS_example = upload_WS_example;
+func.upload_WAS_example = upload_WAS_example;
 
 module.exports = func;

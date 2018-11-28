@@ -6,7 +6,7 @@ var fontService = require('../service/font');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	fontService.upload_example()
+	fontService.python_example()
 	res.render('index', { title: 'Express', title2: 'Condition', is_check: true});
 });
 router.get('/false', function(req, res, next) {
