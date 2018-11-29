@@ -11,7 +11,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/shutdown', function(req, res, next) {
     process.exit(0);
-    //
 });
 
 router.get('/ping', function(req, res, next) {
