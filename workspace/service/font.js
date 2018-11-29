@@ -6,13 +6,20 @@ var ps = require('python-shell');
 function startToMakingFont(font) {
 
     // handwrite image download
-    downloadInputImage(font.handwrite_image_path, font.id, 'sample.png')
+    downloadInputImage(font.handwrite_image_path, font.id, 'handwrite_image.jpg')
     .then(function(imagePath) {
-        return runPythonCode(imagePath) // run python code
+
+    // run python code
+        return runPythonCode(imagePath)
     }).then(function(fontFilePaths) {
-        return uploadFontFiles_to_WS(fontFilePaths)
+
+    // font files upload
+        return uploadFontFiles(fontFilePaths)
     }).then(function(fontUrls) {
-        return uploadFontURL_to_WAS(font.id, fontUrls)
+
+    // send make-complete message to SONMAT-WEB
+        return sendCompleteMessage(font.id, fontUrls)
+
     }).then(function(result) {
         console.log(result)
     }).catch(function(err) {
@@ -49,7 +56,7 @@ function python_example(){
 function upload_WS_example() {
 
     // upload font data
-    uploadFontFiles_to_WS(['C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',
+    uploadFontFiles(['C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',
                            'C:\\Users\\hhjun\\Desktop\\workspace\\nodejs\\SONMAT_DeepConnectWeb\\workspace\\repository\\10\\sample.png',])
     .then(function(fontUrls) {
         console.log(fontUrls)
@@ -63,9 +70,9 @@ function upload_WS_example() {
 
 function upload_WAS_example() {
 
-    var font_id = 10
-    uploadFontFiles_to_WS(font_id, [ 'http://file.son-mat.com/file/9639/a5f7baa1-6799-497a-8aea-bfb7a2e7ac02.png',
-                                     'http://file.son-mat.com/file/1539/0549c1c9-fc49-4ec5-a5a3-16d4b06ef47a.png' ]);
+    var font_id = 10;
+    uploadFontFiles(font_id, [ 'http://file.son-mat.com/file/9639/a5f7baa1-6799-497a-8aea-bfb7a2e7ac02.png',
+                                     'http://file.son-mat.com/file/1539/0549c1c9-fc49-4ec5-a5a3-16d4b06ef47a.png' ])
     .then(function(result) {
         console.log(result)
         
@@ -74,9 +81,11 @@ function upload_WAS_example() {
     });
 }
 
+
+
 function downloadInputImage(filePath, font_id, newFileName) {
 
-    var IMAGE_DOWNLOAD_DIR_PATH = path.join(__dirname, '..', 'repository', ''+font_id);
+    var IMAGE_DOWNLOAD_DIR_PATH = path.join(__dirname, '..', 'repository', ''+ font_id);
     if (!fs.existsSync(IMAGE_DOWNLOAD_DIR_PATH))
         fs.mkdirSync(IMAGE_DOWNLOAD_DIR_PATH,{ recursive: true })
     var newFilePath = path.join(IMAGE_DOWNLOAD_DIR_PATH, newFileName);
@@ -103,17 +112,21 @@ function downloadInputImage(filePath, font_id, newFileName) {
 
 function runPythonCode(imagePath) {
 
+    var PYTHON_PATH = "/usr/local/lib/python3.5";
+    var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '/model_apply_python';
+    var MODEL_APPLOY_PYTHON_NAME = 'deep_main.py';
+
     var options = {
         mode: 'text',
-        pythonPath: 'C:/Users/hhjun/python3/python3.exe', // 'path/to/python'
+        pythonPath: PYTHON_PATH, // 'path/to/python'
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: __dirname, // 'path/to/my/***.py'
+        scriptPath: MODEL_APPLY_PYTHON_CODE_DIR,// 'path/to/my/***.py'
         args: [ imagePath ] // sending Parameter
     };
 
     return new Promise(function(resolve, reject){
         // results - font path into local storage
-        ps.PythonShell.run('test.py', options, function (err, results) {
+        ps.PythonShell.run(MODEL_APPLOY_PYTHON_NAME, options, function (err, results) {
             if (err) reject(err);
             resolve(results);
             // [ 'C:/Users/Desktop/.../10/sample1.ttf', ]
@@ -123,7 +136,7 @@ function runPythonCode(imagePath) {
 
 }
 
-function uploadFontFiles_to_WS(fontFilePaths) {
+function uploadFontFiles(fontFilePaths) {
 
     var FILE_UPLOAD_API_URL = 'http://file-api.seolgi.com/api/files/multiple/upload';
     var file_stream = [];
@@ -162,9 +175,9 @@ function uploadFontFiles_to_WS(fontFilePaths) {
     });
 }
 
-function uploadFontURL_to_WAS(font_id, fontUrls){
+function sendCompleteMessage(font_id, fontUrls){
 
-    var WAS_SERVER_URL = 'localhost:9000/....'
+    var FONT_MAKE_COMPELETE_API_URL = 'http://45.119.145.130:9000/api/font/make/complete'
 
     var formData = {
         fontUrls : fontUrls,
@@ -174,7 +187,7 @@ function uploadFontURL_to_WAS(font_id, fontUrls){
     return new Promise(function(resolve, reject){
 
         // fontFilePaths.forEach(function(fontFilePath) {
-        request.post({ url: WAS_SERVER_URL, formData: formData },  function (err, resp, body) {
+        request.post({ url: FONT_MAKE_COMPELETE_API_URL, formData: formData },  function (err, resp, body) {
             if (err) {
                 reject(err)
             } else {
