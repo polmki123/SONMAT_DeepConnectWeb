@@ -8,4 +8,5 @@ ttf_files = ['/home/deep_user/deploy/sonmat/webapp/workspace/repository/117/1.tt
 '/home/deep_user/deploy/sonmat/webapp/workspace/repository/117/2.ttf',
 '/home/deep_user/deploy/sonmat/webapp/workspace/repository/117/3.ttf']
 
-print(ttf_files)
+for ttf_file in ttf_files:
+    print(ttf_file)
