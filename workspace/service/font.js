@@ -116,7 +116,7 @@ function downloadInputImage(filePath, font_id, newFileName) {
 function runPythonCode(imagePath) {
 
     var PYTHON_PATH = "/usr/local/bin/python3.5";
-    var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '\\model_apply_python';
+    var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '/model_apply_python';
     var MODEL_APPLY_PYTHON_NAME = 'deep_main.py';
 
     var options = {
