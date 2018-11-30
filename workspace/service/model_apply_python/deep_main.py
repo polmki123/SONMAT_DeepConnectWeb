@@ -5,4 +5,4 @@ import os
 # sys.argv[1]
 
 print(sys.argv[1])
-
+return sys.argv[1]
