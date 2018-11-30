@@ -10,14 +10,17 @@ function startToMakingFont(font) {
     .then(function(imagePath) {
 
     // run python code
+        console.log("[downloadInputImage success] ", imagePath);
         return runPythonCode(imagePath)
     }).then(function(fontFilePaths) {
 
     // font files upload
+        console.log("[runPythonCode success] ", fontFilePaths);
         return uploadFontFiles(fontFilePaths)
     }).then(function(fontUrls) {
 
     // send make-complete message to SONMAT-WEB
+        console.log("[uploadFontFiles success] ", fontUrls);
         return sendCompleteMessage(font.id, fontUrls)
 
     }).then(function(result) {
@@ -113,8 +116,8 @@ function downloadInputImage(filePath, font_id, newFileName) {
 function runPythonCode(imagePath) {
 
     var PYTHON_PATH = "/usr/local/lib/python3.5";
-    var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '/model_apply_python';
-    var MODEL_APPLOY_PYTHON_NAME = 'deep_main.py';
+    var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '\\model_apply_python';
+    var MODEL_APPLY_PYTHON_NAME = 'deep_main.py';
 
     var options = {
         mode: 'text',
@@ -126,7 +129,7 @@ function runPythonCode(imagePath) {
 
     return new Promise(function(resolve, reject){
         // results - font path into local storage
-        ps.PythonShell.run(MODEL_APPLOY_PYTHON_NAME, options, function (err, results) {
+        ps.PythonShell.run(MODEL_APPLY_PYTHON_NAME, options, function (err, results) {
             if (err) reject(err);
             resolve(results);
             // [ 'C:/Users/Desktop/.../10/sample1.ttf', ]
