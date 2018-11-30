@@ -148,6 +148,7 @@ function uploadFontFiles(fontFilePaths) {
         files: [],
     };
     fontFilePaths.forEach(function(fontFilePath){
+        console.log("<< fontFilePath >> ", fontFilePath);
         formData.files.push(fs.createReadStream(fontFilePath))
     });
     return new Promise(function(resolve, reject){
