@@ -2,6 +2,7 @@ var fs = require('fs');
 var request = require('request');
 var path = require('path');
 var ps = require('python-shell');
+var convert = require('./model_apply_python/test');
 
 function startToMakingFont(font) {
 
@@ -12,6 +13,11 @@ function startToMakingFont(font) {
     // run python code
         console.log("[downloadInputImage success] ", imagePath);
         return runPythonCode(imagePath)
+    }).then(function() {
+
+    // convert svg to ttf
+        console.log("[runPythonCode success] ");
+        return convert.convert_svg_to_ttf();
     }).then(function(fontFilePaths) {
 
     // font files upload
@@ -135,8 +141,6 @@ function runPythonCode(imagePath) {
             // [ 'C:/Users/Desktop/.../10/sample1.ttf', ]
         });
     });
-    
-
 }
 
 function uploadFontFiles(fontFilePaths) {
