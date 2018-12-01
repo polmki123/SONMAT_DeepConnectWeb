@@ -17,7 +17,7 @@ from model import *
 
 
 def input_Deepmodel_image(inputimagedir):
-	frame_dir = './frame_label/'
+	frame_dir = '/frame_label/'
 	frame_names = os.listdir(frame_dir)
 	input_data = list()
 	for frame in frame_names:
@@ -32,11 +32,10 @@ def input_Deepmodel_image(inputimagedir):
 
 
 
-def make_image1(inputimagedir = '../Deep_model/test1.jpg', model_dir):
+def make_image(inputimagedir, model_dir, save_image_dir):
 	start_time = time.time()
 	input_data, output_name = utils.input_Deepmodel_image(inputimagedir)
 	utils.default_model_dir = model_dir
-
 	model = ResNet()
 	model = nn.DataParallel(model)
 	checkpoint = utils.load_checkpoint(model_dir+str(12))
@@ -45,97 +44,37 @@ def make_image1(inputimagedir = '../Deep_model/test1.jpg', model_dir):
 	else:
 		model.load_state_dict(checkpoint['state_dict'])
 		model.eval()
-		number = 0
-		for count in range(len(input_data)):
-			i = input_data[count]
-			number = number + 1
-			i = np.array(i)
-			i = i.reshape(1,9,64,64)
-			input = torch.from_numpy(i)
-			input = input.type(torch.FloatTensor)
-			input = utils.normalize_image(input)
-			output = model(input)
-			output = Variable(output[1]).data.cpu().numpy()
-			output = output.reshape(64,64)
-			output = utils.renormalize_image(output)
-			output = utils.normalize_function(output)
-			img = Image.fromarray(output.astype('uint8'), 'L')
-			img = PIL.ImageOps.invert(img)
-			img.save('./save_image/' + output_name[count][:-4] + '.png')
+		make_image_process(input_data, model, output_name, save_image_dir)
 
 	now = time.gmtime(time.time() - start_time)
 	print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
 
-def make_image2(inputimagedir = '../Deep_model/test1.jpg', model_dir):
-	start_time = time.time()
-	input_data, output_name = utils.input_Deepmodel_image(inputimagedir)
-	utils.default_model_dir = model_dir
 
-	model = ResNet()
-	model = nn.DataParallel(model)
-	checkpoint = utils.load_checkpoint(model_dir+str(12))
-	if not checkpoint:
-		pass
-	else:
-		model.load_state_dict(checkpoint['state_dict'])
-		model.eval()
-		number = 0
-		for count in range(len(input_data)):
-			i = input_data[count]
-			number = number + 1
-			i = np.array(i)
-			i = i.reshape(1,9,64,64)
-			input = torch.from_numpy(i)
-			input = input.type(torch.FloatTensor)
-			input = utils.normalize_image(input)
-			output = model(input)
-			output = Variable(output[1]).data.cpu().numpy()
-			output = output.reshape(64,64)
-			output = utils.renormalize_image(output)
-			output = utils.normalize_function(output)
-			img = Image.fromarray(output.astype('uint8'), 'L')
-			img = PIL.ImageOps.invert(img)
-			img.save('./save_image/' + output_name[count][:-4] + '.png')
+def make_image_process(input_data, model, output_name, save_image_dir):
+	for count in range(len(input_data)):
+		i = input_data[count]
+		i = np.array(i)
+		i = i.reshape(1, 9, 64, 64)
+		input = torch.from_numpy(i)
+		input = input.type(torch.FloatTensor)
+		input = utils.normalize_image(input)
+		output = model(input)
+		output = Variable(output[1]).data.cpu().numpy()
+		output = output.reshape(64, 64)
+		output = utils.renormalize_image(output)
+		output = utils.normalize_function(output)
+		img = Image.fromarray(output.astype('uint8'), 'L')
+		img = PIL.ImageOps.invert(img)
+		img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
 
-	now = time.gmtime(time.time() - start_time)
-	print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
-
-def make_image3(inputimagedir = '../Deep_model/test1.jpg', model_dir):
-	start_time = time.time()
-	input_data, output_name = utils.input_Deepmodel_image(inputimagedir)
-	utils.default_model_dir = model_dir
-
-	model = ResNet()
-	model = nn.DataParallel(model)
-	checkpoint = utils.load_checkpoint(model_dir+str(12))
-	if not checkpoint:
-		pass
-	else:
-		model.load_state_dict(checkpoint['state_dict'])
-		model.eval()
-		number = 0
-		for count in range(len(input_data)):
-			i = input_data[count]
-			number = number + 1
-			i = np.array(i)
-			i = i.reshape(1,9,64,64)
-			input = torch.from_numpy(i)
-			input = input.type(torch.FloatTensor)
-			input = utils.normalize_image(input)
-			output = model(input)
-			output = Variable(output[1]).data.cpu().numpy()
-			output = output.reshape(64,64)
-			output = utils.renormalize_image(output)
-			output = utils.normalize_function(output)
-			img = Image.fromarray(output.astype('uint8'), 'L')
-			img = PIL.ImageOps.invert(img)
-			img.save('./save_image/' + output_name[count][:-4] + '.png')
-
-	now = time.gmtime(time.time() - start_time)
-	print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
 
 	
 if __name__ == "__main__":
 	inputimagedir = sys.argv[1]
-	model_dir = './model/'
-	main(inputimagedir, model_dir)
+	model_dir = '/model/'
+	save_image_dir_1 = '/save_image/1/'
+	save_image_dir_2 = '/save_image/2/'
+	save_image_dir_3 = '/save_image/3/'
+	make_image(inputimagedir, model_dir, save_image_dir_1)
+	make_image(inputimagedir, model_dir, save_image_dir_2)
+	make_image(inputimagedir, model_dir, save_image_dir_3)
