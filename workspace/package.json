@@ -22,6 +22,9 @@
     "pngjs": "^3.3.0",
     "serve-favicon": "~2.4.2",
     "svg2ttf": "^4.1.0"
-
+  },
+  "devDependencies": {
+    "svgicons2svgfont": "^6.0.0",
+    "webfont": "^7.1.4"
   }
 }
