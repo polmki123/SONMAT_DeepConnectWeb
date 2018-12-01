@@ -17,12 +17,12 @@ from model import *
 
 
 def input_Deepmodel_image(inputimagedir):
-	frame_dir = '../frame_label/'
-	frame_paths = glob.glob(os.path.join(frame_dir, '*.jpg'))
+	frame_dir = './frame_label/'
+	#frame_paths = glob.glob(os.path.join(frame_dir, '*.jpg'))
 	frame_names = os.listdir(frame_dir)
 	input_data = list()
-	for frame in frame_paths:
-		frame_image = np.array(Image.open(frame)).reshape(1, 64, 64)
+	for frame in frame_names:
+		frame_image = np.array(Image.open(frame_dir + frame)).reshape(1, 64, 64)
 		input_image = np.array(Image.open(inputimagedir))
 		input_image = np.array(np.split(input_image, 8, axis=1))  # 8*64*64
 		Concat_data = np.append(input_image, frame_image, axis=0)
@@ -64,7 +64,7 @@ def main(inputimagedir = '../Deep_model/test1.jpg', model_dir):
 			output = utils.normalize_function(output)
 			img = Image.fromarray(output.astype('uint8'), 'L')
 			img = PIL.ImageOps.invert(img)
-			img.save('../save_image/' + output_name[count][:-4] + '.png')
+			img.save('./save_image/' + output_name[count][:-4] + '.png')
 
         
 	now = time.gmtime(time.time() - start_time)
@@ -72,7 +72,7 @@ def main(inputimagedir = '../Deep_model/test1.jpg', model_dir):
 	
 if __name__ == "__main__":
 	inputimagedir = sys.argv[1]
-	model_dir = '../model/'
+	model_dir = './model/'
 	main(inputimagedir, model_dir)
 
 # # input image file path is 
