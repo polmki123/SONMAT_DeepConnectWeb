@@ -13,6 +13,10 @@ function convert_svg_to_ttf() {
     for(var image_set_index = 1; image_set_index <= image_set_count; image_set_index++) {
 
         var PNG_IMAGES_DIR = path.join(__dirname, 'save_image', image_set_index.toString());
+        if (!fs.existsSync(PNG_IMAGES_DIR)) {
+            fs.mkdirSync(PNG_IMAGES_DIR, { recursive: true });
+        }
+
         console.log("PNG_IMAGES_DIR ", PNG_IMAGES_DIR);
 
         var fontStream = new svgicons2svgfont({
@@ -30,6 +34,9 @@ function convert_svg_to_ttf() {
 
         // PNG to SVG
         var SVG_IMAGES_DIR = path.join(__dirname, 'svg', image_set_index.toString());
+        if (!fs.existsSync(SVG_IMAGES_DIR)) {
+            fs.mkdirSync(SVG_IMAGES_DIR, { recursive: true });
+        }
         console.log("SVG_IMAGES_DIR ", SVG_IMAGES_DIR);
         for(var i=0; i<files.length; i++) {
 
@@ -43,8 +50,18 @@ function convert_svg_to_ttf() {
 
 
         // SVG to combine SVG
-        var SVG_COMBINE_FILE_PATH = path.join(__dirname, 'svg_fonts', image_set_index + '.svg');
-        var TTF_FILE_PATH = path.join(__dirname, 'ttf_fonts', image_set_index + '.ttf');
+        var SVG_COMBINE_DIR = path.join(__dirname, 'svg_fonts');
+        if (!fs.existsSync(SVG_COMBINE_DIR)) {
+            fs.mkdirSync(SVG_COMBINE_DIR, { recursive: true });
+        }
+
+        var TTF_FILE_DIR = path.join(__dirname, 'ttf_fonts');
+        if (!fs.existsSync(TTF_FILE_DIR)) {
+            fs.mkdirSync(TTF_FILE_DIR, { recursive: true });
+        }
+
+        var SVG_COMBINE_FILE_PATH = path.join(SVG_COMBINE_DIR, image_set_index + '.svg');
+        var TTF_FILE_PATH = path.join(TTF_FILE_DIR, image_set_index + '.ttf');
 
         console.log("SVG_COMBINE_FILE_PATH ", SVG_COMBINE_FILE_PATH);
         console.log("TTF_FILE_PATH ", TTF_FILE_PATH);
