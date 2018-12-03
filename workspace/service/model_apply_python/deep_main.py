@@ -34,7 +34,7 @@ def input_Deepmodel_image(inputimagedir):
 
 def make_image(inputimagedir, model_dir, save_image_dir):
 	start_time = time.time()
-	input_data, output_name = utils.input_Deepmodel_image(inputimagedir)
+	input_data, output_name = input_Deepmodel_image(inputimagedir)
 	utils.default_model_dir = model_dir
 	model = ResNet()
 	model = nn.DataParallel(model)
