@@ -12,7 +12,7 @@ function convert_svg_to_ttf() {
 
     for(var image_set_index = 1; image_set_index <= image_set_count; image_set_index++) {
 
-        var PNG_IMAGES_DIR = path.join(__dirname, 'save_image', image_set_index);
+        var PNG_IMAGES_DIR = path.join(__dirname, 'save_image', image_set_index.toString());
         console.log("PNG_IMAGES_DIR ", PNG_IMAGES_DIR);
 
         var fontStream = new svgicons2svgfont({
@@ -29,7 +29,7 @@ function convert_svg_to_ttf() {
         }
 
         // PNG to SVG
-        var SVG_IMAGES_DIR = path.join(__dirname, 'svg', image_set_index);
+        var SVG_IMAGES_DIR = path.join(__dirname, 'svg', image_set_index.toString());
         console.log("SVG_IMAGES_DIR ", SVG_IMAGES_DIR);
         for(var i=0; i<files.length; i++) {
 
