@@ -17,7 +17,7 @@ from model import *
 
 
 def input_Deepmodel_image(inputimagedir):
-	frame_dir = '~/frame_label/'
+	frame_dir = '/home/deep_user/frame_label/'
 	frame_names = os.listdir(frame_dir)
 	input_data = list()
 	for frame in frame_names:
@@ -71,7 +71,7 @@ def make_image_process(input_data, model, output_name, save_image_dir):
 	
 if __name__ == "__main__":
 	inputimagedir = sys.argv[1]
-	model_dir = '~/model/'
+	model_dir = '/home/deep_user/model/'
 	save_image_dir_1 = '/save_image/1/'
 	save_image_dir_2 = '/save_image/2/'
 	save_image_dir_3 = '/save_image/3/'
