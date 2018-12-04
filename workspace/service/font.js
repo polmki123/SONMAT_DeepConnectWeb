@@ -12,7 +12,7 @@ function startToMakingFont(font) {
 
     // run python code
         console.log("[downloadInputImage success] ", imagePath);
-        return runPythonCode(imagePath)
+        return runPythonCode(imagePath, font.id)
     }).then(function() {
 
     // convert svg to ttf
@@ -94,9 +94,11 @@ function upload_WAS_example() {
 
 function downloadInputImage(filePath, font_id, newFileName) {
 
-    var IMAGE_DOWNLOAD_DIR_PATH = path.join(__dirname, '..', 'repository', ''+ font_id);
+    var REPOSITORY_PATH = '/home/deep_user/repository';
+    var IMAGE_DOWNLOAD_DIR_PATH = path.join(REPOSITORY_PATH, ''+ font_id);
     if (!fs.existsSync(IMAGE_DOWNLOAD_DIR_PATH))
         fs.mkdirSync(IMAGE_DOWNLOAD_DIR_PATH,{ recursive: true })
+
     var newFilePath = path.join(IMAGE_DOWNLOAD_DIR_PATH, newFileName);
 
     var download = function(uri, filename, callback, Error_callback){
@@ -119,7 +121,7 @@ function downloadInputImage(filePath, font_id, newFileName) {
 }
 
 
-function runPythonCode(imagePath) {
+function runPythonCode(imagePath, font_id) {
 
     var PYTHON_PATH = "/usr/bin/python3.5";
     var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '/model_apply_python';
@@ -130,7 +132,7 @@ function runPythonCode(imagePath) {
         pythonPath: PYTHON_PATH, // 'path/to/python'
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: MODEL_APPLY_PYTHON_CODE_DIR,// 'path/to/my/***.py'
-        args: [ imagePath ] // sending Parameter
+        args: [ imagePath, font_id ] // sending Parameter
     };
 
     return new Promise(function(resolve, reject){
