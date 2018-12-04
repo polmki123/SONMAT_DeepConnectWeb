@@ -5,18 +5,36 @@ var ImageTracer = require('./javascripts/imagetracer_v1.2.1');
 var PNG = require('pngjs').PNG;
 var path = require('path');
 
-function convert_svg_to_ttf() {
+var REPOSITORY_PATH = '/home/deep_user/repository';
+
+function get_dir(dir_path_list) {
+
+    var dir = path.join(path_list[0]);
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    dir_path_list.forEach(function(dir_path, index) {
+
+        if (index == 0) return;
+
+        dir = path.join(dir, path + '');
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    });
+
+    return dir;
+}
+
+function convert_svg_to_ttf(font_id) {
 
     var image_set_count = 3;
     var ttf_file_paths = [];
 
     for(var image_set_index = 1; image_set_index <= image_set_count; image_set_index++) {
 
-        var PNG_IMAGES_DIR = path.join(__dirname, 'save_image', image_set_index.toString());
-        if (!fs.existsSync(PNG_IMAGES_DIR)) {
-            fs.mkdirSync(PNG_IMAGES_DIR, { recursive: true });
-        }
-
+        var PNG_IMAGES_DIR = get_dir([REPOSITORY_PATH, font_id, 'save_image', image_set_index]);
         console.log("PNG_IMAGES_DIR ", PNG_IMAGES_DIR);
 
         var fontStream = new svgicons2svgfont({
@@ -33,11 +51,9 @@ function convert_svg_to_ttf() {
         }
 
         // PNG to SVG
-        var SVG_IMAGES_DIR = path.join(__dirname, 'svg', image_set_index.toString());
-        if (!fs.existsSync(SVG_IMAGES_DIR)) {
-            fs.mkdirSync(SVG_IMAGES_DIR, { recursive: true });
-        }
+        var SVG_IMAGES_DIR = get_dir([REPOSITORY_PATH, font_id, 'svg', image_set_index]);
         console.log("SVG_IMAGES_DIR ", SVG_IMAGES_DIR);
+
         for(var i=0; i<files.length; i++) {
 
             var data = fs.readFileSync(PNG_IMAGES_DIR + '/' + files[i]);
@@ -50,15 +66,9 @@ function convert_svg_to_ttf() {
 
 
         // SVG to combine SVG
-        var SVG_COMBINE_DIR = path.join(__dirname, 'svg_fonts');
-        if (!fs.existsSync(SVG_COMBINE_DIR)) {
-            fs.mkdirSync(SVG_COMBINE_DIR, { recursive: true });
-        }
+        var SVG_COMBINE_DIR = get_dir([REPOSITORY_PATH, font_id, 'svg_fonts']);
 
-        var TTF_FILE_DIR = path.join(__dirname, 'ttf_fonts');
-        if (!fs.existsSync(TTF_FILE_DIR)) {
-            fs.mkdirSync(TTF_FILE_DIR, { recursive: true });
-        }
+        var TTF_FILE_DIR = get_dir([REPOSITORY_PATH, font_id, 'ttf_fonts']);
 
         var SVG_COMBINE_FILE_PATH = path.join(SVG_COMBINE_DIR, image_set_index + '.svg');
         var TTF_FILE_PATH = path.join(TTF_FILE_DIR, image_set_index + '.ttf');
