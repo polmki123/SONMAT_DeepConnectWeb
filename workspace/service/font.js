@@ -17,7 +17,7 @@ function startToMakingFont(font) {
 
     // convert svg to ttf
         console.log("[runPythonCode success] ");
-        return convert.convert_svg_to_ttf();
+        return convert.convert_svg_to_ttf(font.id);
     }).then(function(fontFilePaths) {
 
     // font files upload

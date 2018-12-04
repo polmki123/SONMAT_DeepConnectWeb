@@ -9,7 +9,7 @@ var REPOSITORY_PATH = '/home/deep_user/repository';
 
 function get_dir(dir_path_list) {
 
-    var dir = path.join(path_list[0]);
+    var dir = path.join(dir_path_list[0]);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
