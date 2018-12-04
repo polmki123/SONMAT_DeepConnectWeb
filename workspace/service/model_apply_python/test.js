@@ -18,7 +18,7 @@ function get_dir(dir_path_list) {
 
         if (index == 0) return;
 
-        dir = path.join(dir, path + '');
+        dir = path.join(dir, dir_path + '');
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
