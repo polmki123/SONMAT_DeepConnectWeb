@@ -69,19 +69,34 @@ def make_image_process(input_data, model, output_name, save_image_dir):
 
 
 	
+def get_directory_path(dir_path):
+
+    directory_path = dir_path[0]
+    if not os.path.exists(directory_path):
+        os.makedirs(directory_path)
+
+    for dir_index in range(len(dir_path)):
+
+        if dir_index == 0: continue
+
+        directory_path = directory_path + dir_path[dir_index]
+        if not os.path.exists(directory_path):
+            os.makedirs(directory_path)
+
+    return directory_path
+    
+
 if __name__ == "__main__":
     inputimagedir = sys.argv[1]
     font_id = sys.argv[2]
 
     model_dir = '/home/deep_user/model/'
 
-    repository_dir = '/home/deep_user/repository/' + str(font_id)
-    print(repository_dir)
+    repository_dir = get_directory_path(['/home/deep_user/repository', '/' + str(font_id)])
 
-    save_image_dir_1 = repository_dir + '/save_image/1/'
-    save_image_dir_2 = repository_dir + '/save_image/2/'
-    save_image_dir_3 = repository_dir + '/save_image/3/'
-    print(save_image_dir_1)
+    save_image_dir_1 = get_directory_path([repository_dir, '/save_image', '/1'])
+    save_image_dir_2 = get_directory_path([repository_dir, '/save_image', '/2'])
+    save_image_dir_3 = get_directory_path([repository_dir, '/save_image', '/3'])
 
     make_image(inputimagedir, model_dir, save_image_dir_1)
     make_image(inputimagedir, model_dir, save_image_dir_2)
