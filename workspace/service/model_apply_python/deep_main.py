@@ -66,7 +66,7 @@ def make_image_process(input_data, model, output_name, save_image_dir):
 		img = Image.fromarray(output.astype('uint8'), 'L')
 		img = PIL.ImageOps.invert(img)
 		if not os.path.exists(save_image_dir):
-                os.makedirs(save_image_dir)
+            os.makedirs(save_image_dir)
 		img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
 	
 def get_directory_path(dir_path):
