@@ -38,7 +38,7 @@ def make_image(inputimagedir, model_dir, save_image_dir):
 	utils.default_model_dir = model_dir
 	model = ResNet()
 	model = nn.DataParallel(model)
-	checkpoint = utils.load_checkpoint(model_dir+str(12))
+	checkpoint = utils.load_checkpoint(model_dir)
 	if not checkpoint:
 		pass
 	else:
@@ -65,9 +65,9 @@ def make_image_process(input_data, model, output_name, save_image_dir):
 		output = utils.normalize_function(output)
 		img = Image.fromarray(output.astype('uint8'), 'L')
 		img = PIL.ImageOps.invert(img)
+		if not os.path.exists(save_image_dir):
+                os.makedirs(save_image_dir)
 		img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
-
-
 	
 def get_directory_path(dir_path):
 
@@ -87,8 +87,11 @@ def get_directory_path(dir_path):
     
 
 if __name__ == "__main__":
-    inputimagedir = sys.argv[1]
-    font_id = sys.argv[2]
+    #inputimagedir = sys.argv[1]
+    #font_id = sys.argv[2]
+
+    inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
+    font_id = 120
 
     model_dir = '/home/deep_user/model/'
 
