@@ -46,7 +46,7 @@ def make_image(inputimagedir, model_dir, save_image_dir):
         model.eval()
         print('make image')
         print(save_image_dir)
-        # make_image_process(input_data, model, output_name, save_image_dir)
+        make_image_process(input_data, model, output_name, save_image_dir)
 
     now = time.gmtime(time.time() - start_time)
     print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
