@@ -45,7 +45,8 @@ def make_image(inputimagedir, model_dir, save_image_dir):
         model.load_state_dict(checkpoint['state_dict'])
         model.eval()
         print('make image')
-        make_image_process(input_data, model, output_name, save_image_dir)
+        print(save_image_dir)
+        # make_image_process(input_data, model, output_name, save_image_dir)
 
     now = time.gmtime(time.time() - start_time)
     print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
