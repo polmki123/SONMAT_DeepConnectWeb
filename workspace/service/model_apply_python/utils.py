@@ -38,7 +38,7 @@ def load_checkpoint(model_dir):
     else:
         return None
     print("=> loading checkpoint '{}'".format(model_filename))
-    state = torch.load(model_filename)
+    state = torch.load(model_filename,  map_location='cpu')
     return state
 
 if __name__ == '__main__':
