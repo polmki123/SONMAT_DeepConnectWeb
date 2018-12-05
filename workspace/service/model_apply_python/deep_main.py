@@ -99,9 +99,9 @@ if __name__ == "__main__":
 
     repository_dir = get_directory_path(['/home/deep_user/repository', '/' + str(font_id)])
 
-    save_image_dir_1 = get_directory_path([repository_dir, '/save_image', '/1'])
-    save_image_dir_2 = get_directory_path([repository_dir, '/save_image', '/2'])
-    save_image_dir_3 = get_directory_path([repository_dir, '/save_image', '/3'])
+    save_image_dir_1 = get_directory_path([repository_dir, '/save_image', '/1/'])
+    save_image_dir_2 = get_directory_path([repository_dir, '/save_image', '/2/'])
+    save_image_dir_3 = get_directory_path([repository_dir, '/save_image', '/3/'])
 
     make_image(inputimagedir, model_dir, save_image_dir_1)
     make_image(inputimagedir, model_dir, save_image_dir_2)
