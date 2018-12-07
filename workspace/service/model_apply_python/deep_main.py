@@ -9,6 +9,7 @@ import sys
 import os
 import time
 import glob
+import cv2
 from PIL import Image
 import numpy as np
 import PIL.ImageOps
@@ -89,13 +90,15 @@ def get_directory_path(dir_path):
     
 
 if __name__ == "__main__":
-    #inputimagedir = sys.argv[1]
-    #font_id = sys.argv[2]
+    inputimagedir = sys.argv[1]
+    font_id = sys.argv[2]
 
-    inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
-    font_id = 120
+    # inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
+    # font_id = 120
 
     model_dir = '/home/deep_user/model/'
+    model_dir = '/home/deep_user/model2/'
+    model_dir = '/home/deep_user/model3/'
 
     repository_dir = get_directory_path(['/home/deep_user/repository', '/' + str(font_id)])
 
