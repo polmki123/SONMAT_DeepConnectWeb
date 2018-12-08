@@ -8,12 +8,12 @@ function startToMakingFont(font) {
 
     // handwrite image download
     downloadInputImage(font.handwrite_image_path, font.id, 'handwrite_image.jpg')
-    .then(function(imagePath) {
+   /* .then(function(imagePath) {
 
     // run python code
         console.log("[downloadInputImage success] ", imagePath);
         return runPythonCode(imagePath, font.id)
-    }).then(function() {
+    })*/.then(function() {
 
     // convert svg to ttf
         console.log("[runPythonCode success] ");
