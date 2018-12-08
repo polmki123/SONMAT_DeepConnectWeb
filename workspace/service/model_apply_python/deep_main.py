@@ -102,7 +102,7 @@ if __name__ == "__main__":
     inputimagedir = sys.argv[1]
     font_id = sys.argv[2]
 
-    Image_Preprocess(inputimagedir)
+    # Image_Preprocess(inputimagedir)
     # inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
     # font_id = 120
 
