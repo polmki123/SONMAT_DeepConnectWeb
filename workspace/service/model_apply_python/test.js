@@ -68,10 +68,10 @@ function convert_svg_to_ttf(font_id) {
         // SVG to combine SVG
         var SVG_COMBINE_DIR = get_dir([REPOSITORY_PATH, font_id, 'svg_fonts']);
 
-        var TTF_FILE_DIR = get_dir([REPOSITORY_PATH, font_id, 'ttf_fonts']);
+        var TTF_FILE_DIR = get_dir([REPOSITORY_PATH, font_id, 'ttf_fonts', image_set_index]);
 
         var SVG_COMBINE_FILE_PATH = path.join(SVG_COMBINE_DIR, image_set_index + '.svg');
-        var TTF_FILE_PATH = path.join(TTF_FILE_DIR, image_set_index + '.ttf');
+        var TTF_FILE_PATH = path.join(TTF_FILE_DIR, 'myfont.ttf');
 
         console.log("SVG_COMBINE_FILE_PATH ", SVG_COMBINE_FILE_PATH);
         console.log("TTF_FILE_PATH ", TTF_FILE_PATH);
