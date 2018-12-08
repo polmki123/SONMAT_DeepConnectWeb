@@ -27,7 +27,7 @@ function startToMakingFont(font) {
 
     // send make-complete message to SONMAT-WEB
         console.log("[uploadFontFiles success] ", fontUrls);
-        return sendCompleteMessage(font.id, fontUrls)
+        return sendCompleteMessage(font.id, fontUrls, font.phone)
 
     }).then(function(result) {
         console.log(result)
@@ -185,13 +185,14 @@ function uploadFontFiles(fontFilePaths) {
     });
 }
 
-function sendCompleteMessage(font_id, fontUrls){
+function sendCompleteMessage(font_id, fontUrls, user_phone_number){
 
     var FONT_MAKE_COMPELETE_API_URL = 'http://45.119.145.130:9000/api/font/make/complete'
 
     var formData = {
         fontUrls : fontUrls,
         font_id : font_id,
+        phone : user_phone_number
     }
     
     return new Promise(function(resolve, reject){
