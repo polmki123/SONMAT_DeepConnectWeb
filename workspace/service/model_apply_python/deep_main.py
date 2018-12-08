@@ -10,7 +10,7 @@ import os
 import time
 import glob
 import cv2
-from PIL import Image
+from PIL import Image, ImageFilter
 import numpy as np
 import PIL.ImageOps
 from model import *
@@ -65,9 +65,8 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         output = Variable(output[1]).data.cpu().numpy()
         output = output.reshape(64, 64)
         output = utils.renormalize_image(output)
-        output = utils.normalize_function(output)
         img = Image.fromarray(output.astype('uint8'), 'L')
-        img = PIL.ImageOps.invert(img)
+        img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
             os.makedirs(save_image_dir)
         img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
@@ -89,16 +88,27 @@ def get_directory_path(dir_path):
     return directory_path
     
 
+def Image_Preprocess(inputimagedir):
+	img = Image.open(inputimagedir)
+	size = (512,512)
+	img.thumbnail(size)
+	area = (0,224, 512,228)
+	img = img.crop(area)
+	img = img.convert('L')
+	img.save(inputimagedir, "PNG")
+
+
 if __name__ == "__main__":
     inputimagedir = sys.argv[1]
     font_id = sys.argv[2]
 
+    Image_Preprocess(inputimagedir)
     # inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
     # font_id = 120
 
     model_dir = '/home/deep_user/model/'
-    model_dir = '/home/deep_user/model2/'
-    model_dir = '/home/deep_user/model3/'
+    model_dir2 = '/home/deep_user/model/'
+    model_dir3 = '/home/deep_user/model/'
 
     repository_dir = get_directory_path(['/home/deep_user/repository', '/' + str(font_id)])
 
@@ -107,5 +117,5 @@ if __name__ == "__main__":
     save_image_dir_3 = get_directory_path([repository_dir, '/save_image', '/3/'])
 
     make_image(inputimagedir, model_dir, save_image_dir_1)
-    make_image(inputimagedir, model_dir, save_image_dir_2)
-    make_image(inputimagedir, model_dir, save_image_dir_3)
+    make_image(inputimagedir, model_dir2, save_image_dir_2)
+    make_image(inputimagedir, model_dir3, save_image_dir_3)
