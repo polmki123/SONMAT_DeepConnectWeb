@@ -123,7 +123,7 @@ function downloadInputImage(filePath, font_id, newFileName) {
 
 function runPythonCode(imagePath, font_id) {
 
-    var PYTHON_PATH = "/usr/bin/python3.5";
+    var PYTHON_PATH = "/usr/bin/python3";
     var MODEL_APPLY_PYTHON_CODE_DIR = __dirname + '/model_apply_python';
     var MODEL_APPLY_PYTHON_NAME = 'deep_main.py';
 
