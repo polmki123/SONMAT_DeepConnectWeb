@@ -98,6 +98,7 @@ def get_directory_path(dir_path):
 # 	img.save(inputimagedir, "PNG")
 
 def Image_Preprocess(inputimagedir):
+	img = Image.open(inputimagedir)
 	img = img.convert('L')
 	img.save(inputimagedir, "PNG")
 
