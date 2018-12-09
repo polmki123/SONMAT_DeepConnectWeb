@@ -218,18 +218,16 @@ function uploadFontFiles(fontFilePaths) {
 
 function sendCompleteMessage(font_id, fontUrls, user_phone_number){
 
-    var FONT_MAKE_COMPELETE_API_URL = 'http://45.119.145.130:9000/api/font/make/complete'
+    var FONT_MAKE_COMPELETE_API_URL = 'http://45.119.145.130:9000/api/font/make/complete';
 
-    var body = {
-        fontUrls : fontUrls,
-        font_id : font_id,
-        phone : user_phone_number
-    }
-    
+    var body = {};
+    body.font_id = font_id;
+    body.phone = user_phone_number;
+    body.fontUrls = JSON.stringify(fontUrls);
+
     return new Promise(function(resolve, reject){
 
-        // fontFilePaths.forEach(function(fontFilePath) {
-        request.post({ url: FONT_MAKE_COMPELETE_API_URL, formData: body },  function (err, resp, body) {
+        request.post({ url: FONT_MAKE_COMPELETE_API_URL, formData: body },  function (err, resp, _body) {
             if (err) {
                 reject(err)
             } else {
