@@ -3,6 +3,8 @@ var request = require('request');
 var path = require('path');
 var ps = require('python-shell');
 var convert = require('./model_apply_python/test');
+var exec = require('child_process').exec;
+var sleep = require('system-sleep');
 
 function startToMakingFont(font) {
 
@@ -14,6 +16,12 @@ function startToMakingFont(font) {
 
     // run python code
         console.log("[downloadInputImage success] ", imagePath);
+        return check_gpu_status(imagePath)
+    }).then(function(imagePath) {
+
+    // convert svg to ttf
+        console.log("[runPythonCode success] ");
+
         return runPythonCode(imagePath, font.id)
     }).then(function() {
 
@@ -105,6 +113,38 @@ function upload_WAS_example() {
         
     }).catch(function(err) {
         console.log(err);
+    });
+}
+
+function check_gpu_status_example() {
+
+    check_gpu_status("aaa")
+    .then(function(result){
+        console.log(result)
+    }).catch(function(err){
+        console.log('not')
+    });
+}
+
+
+function check_gpu_status(imagePath) {
+
+    return new Promise(function(resolve, reject){
+        var child = exec("nvidia-smi --query-compute-apps=pid --format=csv,noheader", function (error, stdout, stderr) {
+            // stdout sample result
+            // "20123\n20123\n40202\n"
+            // "20123\n40202\n"
+            // "20123\n"
+            // ""
+            var found = stdout.match(/\n/g)
+
+            if (found == null || found.length < 2){
+                resolve(imagePath);
+            }else{
+                sleep(5000);
+                return check_gpu_status(imagePath);
+            }
+        });
     });
 }
 
