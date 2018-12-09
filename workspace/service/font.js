@@ -17,7 +17,11 @@ function startToMakingFont(font) {
 
     // convert svg to ttf
         console.log("[runPythonCode success] ");
-        return convert.convert_svg_to_ttf(font.id);
+        var ttf_file_path = [];
+        ttf_file_paths.push(convert.convert_svg_to_ttf(font.id,1));
+        ttf_file_paths.push(convert.convert_svg_to_ttf(font.id,2));
+        ttf_file_paths.push(convert.convert_svg_to_ttf(font.id,3));
+        return ttf_file_paths;
     }).then(function(fontFilePaths) {
 
     // font files upload
