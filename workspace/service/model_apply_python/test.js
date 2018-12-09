@@ -100,7 +100,6 @@ function convert_svg_to_ttf(font_id) {
             fontStream.write(glyph1);
         }
         fontStream.end();
-        fs.closeSync();
         ttf_file_paths.push(TTF_FILE_PATH);
     }
 
