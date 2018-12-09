@@ -88,21 +88,24 @@ def get_directory_path(dir_path):
     return directory_path
     
 
+# def Image_Preprocess(inputimagedir):
+# 	img = Image.open(inputimagedir)
+# 	size = (512,512)
+# 	img.thumbnail(size)
+# 	area = (0,224, 512,228)
+# 	img = img.crop(area)
+# 	img = img.convert('L')
+# 	img.save(inputimagedir, "PNG")
+
 def Image_Preprocess(inputimagedir):
-	img = Image.open(inputimagedir)
-	size = (512,512)
-	img.thumbnail(size)
-	area = (0,224, 512,228)
-	img = img.crop(area)
 	img = img.convert('L')
 	img.save(inputimagedir, "PNG")
-
 
 if __name__ == "__main__":
     inputimagedir = sys.argv[1]
     font_id = sys.argv[2]
 
-    # Image_Preprocess(inputimagedir)
+    Image_Preprocess(inputimagedir)
     # inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
     # font_id = 120
 
