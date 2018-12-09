@@ -15,7 +15,7 @@ import numpy as np
 import PIL.ImageOps
 from model import *
 
-os.envrtionos.environ["CUDA_VISIBLE_DEVICES"] = '0'
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 def input_Deepmodel_image(inputimagedir):
     frame_dir = '/home/deep_user/frame_label/'
