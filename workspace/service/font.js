@@ -15,7 +15,7 @@ function startToMakingFont(font) {
     .then(function(imagePath) {
 
     // run python code
-        console.log("[downloadInputImage success] ", imagePath);
+        console.log("[checking gpu status]", imagePath);
         return check_gpu_status(imagePath)
     }).then(function(imagePath) {
 
