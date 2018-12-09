@@ -88,7 +88,7 @@ class ResNet(nn.Module):
         self.bn1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU(True)
         self.Tanh = nn.Tanh()
-        self.n = 8
+        self.n = 18
 
         # 64 32 32
         self.layer1 = nn.Sequential()
