@@ -73,10 +73,10 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         else:
             data_set = Variable(data_set)
         data_set = data_set.type(torch.cuda.FloatTensor)
-        data_set = normalize_image(data_set)
+        data_set = utils.normalize_image(data_set)
         output = model(data_set)
         output = Variable(output[1]).data.cpu().numpy()
-        output = renormalize_image(output)
+        output = utils.renormalize_image(output)
         result_data.extend(output)
 
     for count in range(len(result_data)):
@@ -112,6 +112,7 @@ def Image_Preprocess(inputimagedir):
 	img.save(inputimagedir, "PNG")
 
 if __name__ == "__main__":
+    
     inputimagedir = sys.argv[1]
     font_id = sys.argv[2]
 
