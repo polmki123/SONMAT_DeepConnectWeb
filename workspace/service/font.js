@@ -40,7 +40,7 @@ function startToMakingFont(font) {
 
     // font files upload
         console.log("[convert_svg_to_ttf success] ", ttf_file_paths);
-        return uploadFontFiles(ttf_file_paths)
+        return uploadFontFiles(ttf_file_paths);
     }).then(function(fontUrls) {
 
     // send make-complete message to SONMAT-WEB
@@ -163,6 +163,18 @@ function runPythonCode(imagePath, font_id) {
     });
 }
 
+function checkFontFileCanOpen(fontFile) {
+
+    try {
+        // 존재하지 않는 파일을 읽으려 합니다.
+        var data = fs.readFileSync(fontFile, 'utf8');
+        return true;
+    }
+    catch(err) {
+        return false;
+    }
+}
+
 function uploadFontFiles(fontFilePaths) {
 
     var FILE_UPLOAD_API_URL = 'http://file-api.seolgi.com/api/files/multiple/upload';
@@ -173,6 +185,7 @@ function uploadFontFiles(fontFilePaths) {
     };
     fontFilePaths.forEach(function(fontFilePath){
         console.log("<< fontFilePath >> ", fontFilePath);
+
         formData.files.push(fs.createReadStream(fontFilePath))
     });
     return new Promise(function(resolve, reject){
