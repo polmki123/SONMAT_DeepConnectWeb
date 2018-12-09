@@ -6,6 +6,8 @@ var convert = require('./model_apply_python/test');
 
 function startToMakingFont(font) {
 
+    var ttf_file_paths = [];
+
     // handwrite image download
     downloadInputImage(font.handwrite_image_path, font.id, 'handwrite_image.jpg')
     .then(function(imagePath) {
@@ -18,19 +20,27 @@ function startToMakingFont(font) {
     // convert svg to ttf
         console.log("[runPythonCode success] ");
 
-        var ttf_file_paths = [];
+        return convert.convert_svg_to_ttf(font.id, 1);
+    }).then(function(fontFilePath) {
 
-        ttf_file_paths.push(convert.convert_svg_to_ttf(font.id, 1));
-        ttf_file_paths.push(convert.convert_svg_to_ttf(font.id, 2));
-        ttf_file_paths.push(convert.convert_svg_to_ttf(font.id, 3));
+        console.log("[convertSvgToTtf-1 success] ");
+        ttf_file_paths.push(fontFilePath);
 
-        return ttf_file_paths;
-        
-    }).then(function(fontFilePaths) {
+        return convert.convert_svg_to_ttf(font.id, 2);
+    }).then(function(fontFilePath) {
+
+        console.log("[convertSvgToTtf-2 success] ");
+        ttf_file_paths.push(fontFilePath);
+
+        return convert.convert_svg_to_ttf(font.id, 3);
+    }).then(function(fontFilePath) {
+
+        console.log("[convertSvgToTtf-3 success] ");
+        ttf_file_paths.push(fontFilePath);
 
     // font files upload
-        console.log("[convert_svg_to_ttf success] ", fontFilePaths);
-        return uploadFontFiles(fontFilePaths)
+        console.log("[convert_svg_to_ttf success] ", ttf_file_paths);
+        return uploadFontFiles(ttf_file_paths)
     }).then(function(fontUrls) {
 
     // send make-complete message to SONMAT-WEB
