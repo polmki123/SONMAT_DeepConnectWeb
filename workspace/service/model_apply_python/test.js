@@ -47,18 +47,6 @@ function convert_svg_to_ttf(font_id, image_set_index) {
                 // open TTF file stream
                 fs.writeFileSync(TTF_FILE_PATH, new Buffer(ttf.buffer));
 
-                // wrtie TTF file
-                for (var i=0; i < sources.length; i++) {
-                    // Writing glyphs
-                    let glyph1 = fs.createReadStream(SVG_IMAGES_DIR + '/' + fileName[i] + '.svg');
-                    glyph1.metadata = {
-                        unicode: [String.fromCharCode((sources[i]).toString(10))],
-                        name: 'glyph' + sources[i]
-                    };
-                    fontStream.write(glyph1);
-                }
-                fontStream.end();
-
                 console.log("font stream end");
                 resolve(TTF_FILE_PATH);
 
@@ -132,6 +120,18 @@ function convert_pngs_to_svgs(font_id, image_set_index) {
             .on('error',function(err) {
                 reject(err);
             });
+
+        // wrtie TTF file
+        for (var i=0; i < sources.length; i++) {
+            // Writing glyphs
+            let glyph1 = fs.createReadStream(SVG_IMAGES_DIR + '/' + fileName[i] + '.svg');
+            glyph1.metadata = {
+                unicode: [String.fromCharCode((sources[i]).toString(10))],
+                name: 'glyph' + sources[i]
+            };
+            fontStream.write(glyph1);
+        }
+        fontStream.end();
     });
 }
 
