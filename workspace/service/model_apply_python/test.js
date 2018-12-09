@@ -31,9 +31,7 @@ function convert_svg_to_ttf(font_id, image_set_index) {
 
     var image_set_count = 3;
     var ttf_file_paths = [];
-    var image_set_index = 1;
     
-
     var PNG_IMAGES_DIR = get_dir([REPOSITORY_PATH, font_id, 'save_image', image_set_index]);
     console.log("PNG_IMAGES_DIR ", PNG_IMAGES_DIR);
 
