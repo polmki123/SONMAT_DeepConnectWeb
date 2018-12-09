@@ -64,7 +64,7 @@ def make_image(inputimagedir, model_dir, save_image_dir):
 def make_image_process(input_data, model, output_name, save_image_dir):
     input_data = np.array(input_data)
     train_data = torch.from_numpy(input_data)
-    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=64, shuffle=False, num_workers = 4)
+    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=128, shuffle=False, num_workers = 4)
     result_data = []
 
     for data_set in train_loader :
