@@ -15,7 +15,7 @@ import numpy as np
 import PIL.ImageOps
 from model import *
 
-
+os.envrtionos.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 def input_Deepmodel_image(inputimagedir):
     frame_dir = '/home/deep_user/frame_label/'
@@ -38,7 +38,15 @@ def make_image(inputimagedir, model_dir, save_image_dir):
     input_data, output_name = input_Deepmodel_image(inputimagedir)
     utils.default_model_dir = model_dir
     model = ResNet()
-    model = nn.DataParallel(model)
+    
+    if torch.cuda.is_available():
+        print("USE", torch.cuda.device_count(), "GPUs!")
+        model = nn.DataParallel(model).cuda()
+        cudnn.benchmark = True
+
+    else:
+        print("NO GPU -_-;")
+
     checkpoint = utils.load_checkpoint(model_dir)
     if not checkpoint:
         pass
@@ -59,7 +67,7 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         i = np.array(i)
         i = i.reshape(1, 9, 64, 64)
         input = torch.from_numpy(i)
-        input = input.type(torch.FloatTensor)
+        input = input.type(torch.cuda.FloatTensor)
         input = utils.normalize_image(input)
         output = model(input)
         output = Variable(output[1]).data.cpu().numpy()
@@ -88,14 +96,6 @@ def get_directory_path(dir_path):
     return directory_path
     
 
-# def Image_Preprocess(inputimagedir):
-# 	img = Image.open(inputimagedir)
-# 	size = (512,512)
-# 	img.thumbnail(size)
-# 	area = (0,224, 512,228)
-# 	img = img.crop(area)
-# 	img = img.convert('L')
-# 	img.save(inputimagedir, "PNG")
 
 def Image_Preprocess(inputimagedir):
 	img = Image.open(inputimagedir)
