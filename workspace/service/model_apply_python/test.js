@@ -31,7 +31,7 @@ function convert_svg_to_ttf(font_id, image_set_index) {
 
     var image_set_count = 3;
     var ttf_file_paths = [];
-    
+
     var PNG_IMAGES_DIR = get_dir([REPOSITORY_PATH, font_id, 'save_image', image_set_index]);
     console.log("PNG_IMAGES_DIR ", PNG_IMAGES_DIR);
 
@@ -96,11 +96,8 @@ function convert_svg_to_ttf(font_id, image_set_index) {
         fontStream.write(glyph1);
     }
     fontStream.end();
-
-    ttf_file_paths.push(TTF_FILE_PATH);
     
-
-    return ttf_file_paths;
+    return TTF_FILE_PATH;
 }
 
 var func = {}
