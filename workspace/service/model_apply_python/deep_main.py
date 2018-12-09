@@ -62,17 +62,26 @@ def make_image(inputimagedir, model_dir, save_image_dir):
 
 
 def make_image_process(input_data, model, output_name, save_image_dir):
-    for count in range(len(input_data)):
-        i = input_data[count]
-        i = np.array(i)
-        i = i.reshape(1, 9, 64, 64)
-        input = torch.from_numpy(i)
-        input = input.type(torch.cuda.FloatTensor)
-        input = utils.normalize_image(input)
-        output = model(input)
+    input_data = np.array(input_data)
+    train_data = torch.from_numpy(input_data)
+    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=64, shuffle=False, num_workers = 4)
+    result_data = []
+
+    for data_set in train_loader :
+        if torch.cuda.is_available():
+            data_set = Variable(data_set.cuda())
+        else:
+            data_set = Variable(data_set)
+        data_set = data_set.type(torch.cuda.FloatTensor)
+        data_set = normalize_image(data_set)
+        output = model(data_set)
         output = Variable(output[1]).data.cpu().numpy()
+        output = renormalize_image(output)
+        result_data.extend(output)
+
+    for count in range(len(result_data)):
+        output = result_data[count]
         output = output.reshape(64, 64)
-        output = utils.renormalize_image(output)
         img = Image.fromarray(output.astype('uint8'), 'L')
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
