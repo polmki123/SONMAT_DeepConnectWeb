@@ -8,12 +8,12 @@ function startToMakingFont(font) {
 
     // handwrite image download
     downloadInputImage(font.handwrite_image_path, font.id, 'handwrite_image.jpg')
-   /* .then(function(imagePath) {
+    .then(function(imagePath) {
 
     // run python code
         console.log("[downloadInputImage success] ", imagePath);
         return runPythonCode(imagePath, font.id)
-    })*/.then(function() {
+    }).then(function() {
 
     // convert svg to ttf
         console.log("[runPythonCode success] ");
@@ -29,7 +29,7 @@ function startToMakingFont(font) {
     }).then(function(fontFilePaths) {
 
     // font files upload
-        console.log("[runPythonCode success] ", fontFilePaths);
+        console.log("[convert_svg_to_ttf success] ", fontFilePaths);
         return uploadFontFiles(fontFilePaths)
     }).then(function(fontUrls) {
 
@@ -197,7 +197,7 @@ function sendCompleteMessage(font_id, fontUrls, user_phone_number){
 
     var FONT_MAKE_COMPELETE_API_URL = 'http://45.119.145.130:9000/api/font/make/complete'
 
-    var formData = {
+    var body = {
         fontUrls : fontUrls,
         font_id : font_id,
         phone : user_phone_number
@@ -206,7 +206,7 @@ function sendCompleteMessage(font_id, fontUrls, user_phone_number){
     return new Promise(function(resolve, reject){
 
         // fontFilePaths.forEach(function(fontFilePath) {
-        request.post({ url: FONT_MAKE_COMPELETE_API_URL, formData: formData },  function (err, resp, body) {
+        request.post({ url: FONT_MAKE_COMPELETE_API_URL, formData: body },  function (err, resp, body) {
             if (err) {
                 reject(err)
             } else {
