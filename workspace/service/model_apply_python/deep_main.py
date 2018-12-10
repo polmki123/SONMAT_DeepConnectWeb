@@ -60,10 +60,7 @@ def make_image(inputimagedir, model_dir, save_image_dir):
         model.eval()
         print('make image')
         print(save_image_dir)
-        if '/home/deep_user/model/2' == model_dir :
-            make_image_process2(input_data, model, output_name, save_image_dir)
-        else :
-            make_image_process(input_data, model, output_name, save_image_dir)
+        make_image_process(input_data, model, output_name, save_image_dir)
 
     now = time.gmtime(time.time() - start_time)
     print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
@@ -104,37 +101,37 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
 
 
-def make_image_process2(input_data, model, output_name, save_image_dir):
-    input_data = np.array(input_data)
-    train_data = torch.from_numpy(input_data)
-    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=128, shuffle=False, num_workers = 4)
-    result_data = []
+# def make_image_process2(input_data, model, output_name, save_image_dir):
+#     input_data = np.array(input_data)
+#     train_data = torch.from_numpy(input_data)
+#     train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=128, shuffle=False, num_workers = 4)
+#     result_data = []
 
-    for data_set in train_loader :
-        if torch.cuda.is_available():
-            data_set = Variable(data_set.cuda())
-        else:
-            data_set = Variable(data_set)
-        data_set = data_set.type(torch.cuda.FloatTensor)
-        data_set = utils.normalize_image(data_set)
-        output = model(data_set)
-        output = Variable(output[1]).data.cpu().numpy()
-        output = utils.renormalize_image(output)
-        result_data.extend(output)
+#     for data_set in train_loader :
+#         if torch.cuda.is_available():
+#             data_set = Variable(data_set.cuda())
+#         else:
+#             data_set = Variable(data_set)
+#         data_set = data_set.type(torch.cuda.FloatTensor)
+#         data_set = utils.normalize_image(data_set)
+#         output = model(data_set)
+#         output = Variable(output[1]).data.cpu().numpy()
+#         output = utils.renormalize_image(output)
+#         result_data.extend(output)
 
-    for count in range(len(result_data)):
-        output = result_data[count]
-        output = output.reshape(64, 64)
-        img = Image.fromarray(output.astype('uint8'), 'L')
-        # img = np.array(img)
-        # img = normalize_function(img)
-        # img = img = cv2.bilateralFilter(img,9,75,75)
-        # img = Image.fromarray(img.astype('uint8'), 'L')
-        img = img.point(lambda p: p > 230 and 255)
-        img = img.filter(ImageFilter.SHARPEN)
-        if not os.path.exists(save_image_dir):
-            os.makedirs(save_image_dir)
-        img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
+#     for count in range(len(result_data)):
+#         output = result_data[count]
+#         output = output.reshape(64, 64)
+#         img = Image.fromarray(output.astype('uint8'), 'L')
+#         # img = np.array(img)
+#         # img = normalize_function(img)
+#         # img = img = cv2.bilateralFilter(img,9,75,75)
+#         # img = Image.fromarray(img.astype('uint8'), 'L')
+#         img = img.point(lambda p: p > 230 and 255)
+#         img = img.filter(ImageFilter.SHARPEN)
+#         if not os.path.exists(save_image_dir):
+#             os.makedirs(save_image_dir)
+#         img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
     
 def get_directory_path(dir_path):
 
