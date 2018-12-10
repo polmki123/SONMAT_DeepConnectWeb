@@ -83,6 +83,11 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         output = result_data[count]
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
+        img = np.array(img)
+        kernel = np.ones((2, 2), np.uint8)
+        img = cv2.erode(img, kernel, iterations=1)
+        img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+        img = Image.fromarray(img, 'L')
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
             os.makedirs(save_image_dir)
@@ -111,9 +116,9 @@ def Image_Preprocess(inputimagedir):
     size = (512,64)
     img.thumbnail(size)
     img = img.convert('L')
-    kernel = np.ones((2, 2), np.uint8)
     img = img.point(lambda p: p > 80 and 255)
     img = np.array(img)
+    kernel = np.ones((2, 2), np.uint8)
     img = cv2.erode(img, kernel, iterations=1)
     img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
     img = Image.fromarray(img, 'L')
