@@ -10,12 +10,17 @@ import os
 import time
 import glob
 import cv2
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 import numpy as np
 import PIL.ImageOps
 from model import *
 
 os.environ["CUDA_VISIBLE_DEVICES"] = '0'
+
+def normalize_function(img):
+    # img = (img - img.min()) / (img.max() - img.min())
+    img = (img - img.mean()) / (img.std())
+    return img
 
 def input_Deepmodel_image(inputimagedir):
     frame_dir = '/home/deep_user/frame_label/'
@@ -123,11 +128,11 @@ def make_image_process2(input_data, model, output_name, save_image_dir):
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
         img = np.array(img)
-        kernel = np.ones((2, 2), np.uint8)
+        img = normalize_function(img)
         img = cv2.GaussianBlur(img, (3, 3), 0)
-        # img = cv2.blur(img, (3, 3))
-        img = cv2.erode(img, kernel, iterations=1)
-        img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+        img = Image.fromarray(img.astype('uint8'), 'L')
+        img = ImageOps.invert(img)
+        img = img.point(lambda p: p > 80 and 255)
         img = Image.fromarray(img, 'L')
         # img = img.point(lambda p: p > 10 and 255)
         img = img.filter(ImageFilter.SHARPEN)
