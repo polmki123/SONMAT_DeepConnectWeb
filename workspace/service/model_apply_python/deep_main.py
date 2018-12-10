@@ -164,6 +164,7 @@ def Image_Preprocess(inputimagedir):
     space = Image.new("L", (612, 64), (255))
     space.paste(img,(0,0))
     space.thumbnail(size)
+    space = space.conver('L')
     space.save(inputimagedir, "PNG")
 
 if __name__ == "__main__":
