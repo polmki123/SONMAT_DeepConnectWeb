@@ -162,7 +162,7 @@ def Image_Preprocess(inputimagedir):
     img = img.point(lambda p: p > 100 and 255)
     img = img.filter(ImageFilter.SHARPEN)
     space = Image.new("L", (600, 75), (255))
-    space.paste(img,(0,4))
+    space.paste(img,(0,0))
     space.thumbnail(size)
     space = space.convert('L')
     space.save(inputimagedir, "PNG")
