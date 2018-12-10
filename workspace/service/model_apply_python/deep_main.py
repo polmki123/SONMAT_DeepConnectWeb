@@ -64,7 +64,7 @@ def make_image(inputimagedir, model_dir, save_image_dir):
 def make_image_process(input_data, model, output_name, save_image_dir):
     input_data = np.array(input_data)
     train_data = torch.from_numpy(input_data)
-    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=128, shuffle=False, num_workers = 4)
+    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=256, shuffle=False, num_workers = 4)
     result_data = []
 
     for data_set in train_loader :
@@ -109,6 +109,13 @@ def get_directory_path(dir_path):
 def Image_Preprocess(inputimagedir):
 	img = Image.open(inputimagedir)
 	img = img.convert('L')
+	kernel = np.ones((2, 2), np.uint8)
+	img = img.point(lambda p: p > 80 and 255)
+	img = np.array(img)
+	img = cv2.erode(img, kernel, iterations=1)
+    img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+    img = Image.fromarray(img, 'L')
+    img = img.filter(ImageFilter.SHARPEN)
 	img.save(inputimagedir, "PNG")
 
 if __name__ == "__main__":
@@ -120,9 +127,9 @@ if __name__ == "__main__":
     # inputimagedir = '/home/deep_user/repository/120/handwrite_image.jpg'
     # font_id = 120
 
-    model_dir = '/home/deep_user/model/'
-    model_dir2 = '/home/deep_user/model/'
-    model_dir3 = '/home/deep_user/model/'
+    model_dir = '/home/deep_user/model/1'
+    model_dir2 = '/home/deep_user/model/2'
+    model_dir3 = '/home/deep_user/model/3'
 
     repository_dir = get_directory_path(['/home/deep_user/repository', '/' + str(font_id)])
 
