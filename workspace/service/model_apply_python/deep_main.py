@@ -161,7 +161,7 @@ def Image_Preprocess(inputimagedir):
     img = img.convert('L')
     img = img.point(lambda p: p > 100 and 255)
     img = img.filter(ImageFilter.SHARPEN)
-    space = Image.new("L", (600, 75), (255))
+    space = Image.new("L", (640, 80), (255))
     space.paste(img,(0,0))
     space.thumbnail(size)
     space = space.convert('L')
