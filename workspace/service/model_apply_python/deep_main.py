@@ -83,12 +83,12 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         output = result_data[count]
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
-        img = np.array(img)
-        kernel = np.ones((3, 3), np.uint8)
+        # img = np.array(img)
+        # kernel = np.ones((3, 3), np.uint8)
         # img = cv2.GaussianBlur(img, (3, 3), 0)
         # img = cv2.erode(img, kernel, iterations=1)
-        img = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
-        img = Image.fromarray(img, 'L')
+        # img = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+        # img = Image.fromarray(img, 'L')
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
             os.makedirs(save_image_dir)
