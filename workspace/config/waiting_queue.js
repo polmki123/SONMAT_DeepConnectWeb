@@ -48,7 +48,7 @@ waiting_Queue.prototype =  {
 
 };
 
-module.exports = new Queue();
+module.exports = new waiting_Queue();
 
 
 // var dataset = {
