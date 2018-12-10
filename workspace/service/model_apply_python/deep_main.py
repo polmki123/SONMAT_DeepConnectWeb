@@ -129,7 +129,7 @@ def make_image_process2(input_data, model, output_name, save_image_dir):
         img = cv2.erode(img, kernel, iterations=1)
         img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
         img = Image.fromarray(img, 'L')
-        img = img.point(lambda p: p > 30 and 255)
+        # img = img.point(lambda p: p > 10 and 255)
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
             os.makedirs(save_image_dir)
