@@ -133,7 +133,6 @@ def make_image_process2(input_data, model, output_name, save_image_dir):
         img = Image.fromarray(img.astype('uint8'), 'L')
         img = ImageOps.invert(img)
         img = img.point(lambda p: p > 80 and 255)
-        img = Image.fromarray(img, 'L')
         # img = img.point(lambda p: p > 10 and 255)
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
