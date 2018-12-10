@@ -55,7 +55,10 @@ def make_image(inputimagedir, model_dir, save_image_dir):
         model.eval()
         print('make image')
         print(save_image_dir)
-        make_image_process(input_data, model, output_name, save_image_dir)
+        if '/home/deep_user/model/2' == model_dir :
+            make_image_process2(input_data, model, output_name, save_image_dir)
+        else :
+            make_image_process(input_data, model, output_name, save_image_dir)
 
     now = time.gmtime(time.time() - start_time)
     print('{} hours {} mins {} secs for data'.format(now.tm_hour, now.tm_min, now.tm_sec))
@@ -184,5 +187,5 @@ if __name__ == "__main__":
     save_image_dir_3 = get_directory_path([repository_dir, '/save_image', '/3/'])
 
     make_image(inputimagedir, model_dir, save_image_dir_1)
-    make_image2(inputimagedir, model_dir2, save_image_dir_2)
+    make_image(inputimagedir, model_dir2, save_image_dir_2)
     make_image(inputimagedir, model_dir3, save_image_dir_3)
