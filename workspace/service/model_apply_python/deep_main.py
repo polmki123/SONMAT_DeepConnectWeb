@@ -107,16 +107,16 @@ def get_directory_path(dir_path):
 
 
 def Image_Preprocess(inputimagedir):
-	img = Image.open(inputimagedir)
-	img = img.convert('L')
-	kernel = np.ones((2, 2), np.uint8)
-	img = img.point(lambda p: p > 80 and 255)
-	img = np.array(img)
-	img = cv2.erode(img, kernel, iterations=1)
+    img = Image.open(inputimagedir)
+    img = img.convert('L')
+    kernel = np.ones((2, 2), np.uint8)
+    img = img.point(lambda p: p > 80 and 255)
+    img = np.array(img)
+    img = cv2.erode(img, kernel, iterations=1)
     img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
     img = Image.fromarray(img, 'L')
     img = img.filter(ImageFilter.SHARPEN)
-	img.save(inputimagedir, "PNG")
+    img.save(inputimagedir, "PNG")
 
 if __name__ == "__main__":
     
