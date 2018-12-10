@@ -97,7 +97,7 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         # img = cv2.erode(img, kernel, iterations=1)
         # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
         # img = Image.fromarray(img.astype('uint8'), 'L')
-        img = img.point(lambda p: p > 180 and 255)
+        img = img.point(lambda p: p > 170 and 255)
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
             os.makedirs(save_image_dir)
@@ -164,7 +164,7 @@ def Image_Preprocess(inputimagedir):
     # img = cv2.dilate(img, kernel, iterations =1)
     # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
     # img = Image.fromarray(img.astype('uint8'), 'L')
-    img = img.point(lambda p: p > 150 and 255)
+    img = img.point(lambda p: p > 100 and 255)
     img = img.filter(ImageFilter.SHARPEN)
     img.save(inputimagedir)
 
