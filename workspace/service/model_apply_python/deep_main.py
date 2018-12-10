@@ -159,14 +159,12 @@ def Image_Preprocess(inputimagedir):
     size = (512,64)
     img.thumbnail(size)
     img = img.convert('L')
-    # img = np.array(img)
-    # kernel = np.ones((2, 2), np.uint8)
-    # img = cv2.dilate(img, kernel, iterations =1)
-    # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
-    # img = Image.fromarray(img.astype('uint8'), 'L')
     img = img.point(lambda p: p > 100 and 255)
     img = img.filter(ImageFilter.SHARPEN)
-    img.save(inputimagedir)
+    space = Image.new("L", (612, 64), (255))
+    space.paste(img,(0,0))
+    space.thumbnail(size)
+    space.save(inputimagedir, "PNG")
 
 if __name__ == "__main__":
     
