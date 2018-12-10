@@ -5,42 +5,48 @@ var ps = require('python-shell');
 var convert = require('./model_apply_python/test');
 var exec = require('child_process').exec;
 var sleep = require('system-sleep');
+var waiting_queue = require('../config/waiting_queue');
+var queue = require('../config/queue')
 
-function startToMakingFont(font) {
 
-    var ttf_file_paths = [];
+function register_creating_pool(font) {
 
     // handwrite image download
     downloadInputImage(font.handwrite_image_path, font.id, 'handwrite_image.jpg')
     .then(function(imagePath) {
-
-    // run python code
         console.log("[checking gpu status]", imagePath);
-        return check_gpu_status(imagePath)
-    }).then(function(imagePath) {
+        waiting_queue.push(font.id, imagePath, font.phone)
+    }).catch(function(err) {
+        console.log(err);
+    });
+}
 
+
+function startToMakingFont(request) {
+    var font_id = request.font_id;
+    var imagePath = request.imagePath;
+    var font_phone = request.font_phone;
+
+    var ttf_file_paths = [];
+
+    runPythonCode(imagePath, font_id)
+    .then(function() {
     // convert svg to ttf
         console.log("[runPythonCode success] ");
 
-        return runPythonCode(imagePath, font.id)
-    }).then(function() {
-
-    // convert svg to ttf
-        console.log("[runPythonCode success] ");
-
-        return convert.convert_svg_to_ttf(font.id, 1);
+        return convert.convert_svg_to_ttf(font_id, 1);
     }).then(function(fontFilePath) {
 
         console.log("[convertSvgToTtf-1 success] ");
         ttf_file_paths.push(fontFilePath);
 
-        return convert.convert_svg_to_ttf(font.id, 2);
+        return convert.convert_svg_to_ttf(font_id, 2);
     }).then(function(fontFilePath) {
 
         console.log("[convertSvgToTtf-2 success] ");
         ttf_file_paths.push(fontFilePath);
 
-        return convert.convert_svg_to_ttf(font.id, 3);
+        return convert.convert_svg_to_ttf(font_id, 3);
     }).then(function(fontFilePath) {
 
         console.log("[convertSvgToTtf-3 success] ");
@@ -52,15 +58,18 @@ function startToMakingFont(font) {
     }).then(function(fontUrls) {
 
     // send make-complete message to SONMAT-WEB
+        queue.pop(font_id)
         console.log("[uploadFontFiles success] ", fontUrls);
-        return sendCompleteMessage(font.id, fontUrls, font.phone)
+        return sendCompleteMessage(font_id, fontUrls, font_phone)
 
     }).then(function(result) {
         console.log(result)
     }).catch(function(err) {
+        queue.pop(font_id)
         console.log(err);
     });
 }
+
 
 
 
@@ -116,37 +125,7 @@ function upload_WAS_example() {
     });
 }
 
-function check_gpu_status_example() {
 
-    check_gpu_status("aaa")
-    .then(function(result){
-        console.log(result)
-    }).catch(function(err){
-        console.log('not')
-    });
-}
-
-
-function check_gpu_status(imagePath) {
-
-    return new Promise(function(resolve, reject){
-        var child = exec("nvidia-smi --query-compute-apps=pid --format=csv,noheader", function (error, stdout, stderr) {
-            // stdout sample result
-            // "20123\n20123\n40202\n"
-            // "20123\n40202\n"
-            // "20123\n"
-            // ""
-            var found = stdout.match(/\n/g)
-
-            if (found == null || found.length < 2){
-                resolve(imagePath);
-            }else{
-                sleep(5000);
-                return check_gpu_status(imagePath);
-            }
-        });
-    });
-}
 
 
 
@@ -281,6 +260,7 @@ function sendCompleteMessage(font_id, fontUrls, user_phone_number){
 }
 
 var func = {}
+func.register_creating_pool = register_creating_pool
 func.startToMakingFont = startToMakingFont;
 func.download_example = download_example;
 func.python_example = python_example;
