@@ -95,6 +95,42 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         if not os.path.exists(save_image_dir):
             os.makedirs(save_image_dir)
         img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
+
+
+def make_image_process2(input_data, model, output_name, save_image_dir):
+    input_data = np.array(input_data)
+    train_data = torch.from_numpy(input_data)
+    train_loader = torch.utils.data.DataLoader(dataset=train_data, batch_size=128, shuffle=False, num_workers = 4)
+    result_data = []
+
+    for data_set in train_loader :
+        if torch.cuda.is_available():
+            data_set = Variable(data_set.cuda())
+        else:
+            data_set = Variable(data_set)
+        data_set = data_set.type(torch.cuda.FloatTensor)
+        data_set = utils.normalize_image(data_set)
+        output = model(data_set)
+        output = Variable(output[1]).data.cpu().numpy()
+        output = utils.renormalize_image(output)
+        result_data.extend(output)
+
+    for count in range(len(result_data)):
+        output = result_data[count]
+        output = output.reshape(64, 64)
+        img = Image.fromarray(output.astype('uint8'), 'L')
+        img = np.array(img)
+        kernel = np.ones((2, 2), np.uint8)
+        img = cv2.GaussianBlur(img, (3, 3), 0)
+        # img = cv2.blur(img, (3, 3))
+        img = cv2.erode(img, kernel, iterations=1)
+        img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+        img = Image.fromarray(img, 'L')
+        img = img.point(lambda p: p > 30 and 255)
+        img = img.filter(ImageFilter.SHARPEN)
+        if not os.path.exists(save_image_dir):
+            os.makedirs(save_image_dir)
+        img.save(save_image_dir + output_name[count][:-4] + '.png', "PNG")
     
 def get_directory_path(dir_path):
 
@@ -148,5 +184,5 @@ if __name__ == "__main__":
     save_image_dir_3 = get_directory_path([repository_dir, '/save_image', '/3/'])
 
     make_image(inputimagedir, model_dir, save_image_dir_1)
-    make_image(inputimagedir, model_dir2, save_image_dir_2)
+    make_image2(inputimagedir, model_dir2, save_image_dir_2)
     make_image(inputimagedir, model_dir3, save_image_dir_3)
