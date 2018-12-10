@@ -12,3 +12,8 @@ var schedule = function(){
 		console.log('nope')
 	}
 }
+
+var func = {}
+func.schedule = schedule;
+
+module.exports = func;
