@@ -91,12 +91,12 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         output = result_data[count]
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
-        img = np.array(img)
+        # img = np.array(img)
         # kernel = np.ones((2, 2), np.uint8)
-        img = img = cv2.bilateralFilter(img,9,75,75)
+        # img = img = cv2.bilateralFilter(img,9,75,75)
         # img = cv2.erode(img, kernel, iterations=1)
         # img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
-        img = Image.fromarray(img.astype('uint8'), 'L')
+        # img = Image.fromarray(img.astype('uint8'), 'L')
         img = img.point(lambda p: p > 180 and 255)
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
@@ -126,10 +126,10 @@ def make_image_process2(input_data, model, output_name, save_image_dir):
         output = result_data[count]
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
-        img = np.array(img)
+        # img = np.array(img)
         # img = normalize_function(img)
-        img = img = cv2.bilateralFilter(img,9,75,75)
-        img = Image.fromarray(img.astype('uint8'), 'L')
+        # img = img = cv2.bilateralFilter(img,9,75,75)
+        # img = Image.fromarray(img.astype('uint8'), 'L')
         img = img.point(lambda p: p > 230 and 255)
         img = img.filter(ImageFilter.SHARPEN)
         if not os.path.exists(save_image_dir):
