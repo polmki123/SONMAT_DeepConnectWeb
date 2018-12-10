@@ -108,6 +108,8 @@ def get_directory_path(dir_path):
 
 def Image_Preprocess(inputimagedir):
     img = Image.open(inputimagedir)
+    size = (512,64)
+    img.thumbnail(size)
     img = img.convert('L')
     kernel = np.ones((2, 2), np.uint8)
     img = img.point(lambda p: p > 80 and 255)
