@@ -91,6 +91,7 @@ def make_image_process(input_data, model, output_name, save_image_dir):
         output = result_data[count]
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
+        img = img.point(lambda p: p > 180 and 255)
         img = np.array(img)
         # kernel = np.ones((2, 2), np.uint8)
         img = cv2.GaussianBlur(img, (3, 3), 0)
@@ -127,6 +128,7 @@ def make_image_process2(input_data, model, output_name, save_image_dir):
         output = result_data[count]
         output = output.reshape(64, 64)
         img = Image.fromarray(output.astype('uint8'), 'L')
+        img = img.point(lambda p: p > 230 and 255)
         img = np.array(img)
         # img = normalize_function(img)
         img = cv2.GaussianBlur(img, (3, 3), 0)
